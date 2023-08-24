@@ -1,15 +1,15 @@
 from requests import Response
-from requests import session
 
+from restclient.restclient import Restclient
 from ..models.login_credentials_model import login_credentials_model
 
 
 class LoginApi:
     def __init__(self, host, headers=None):
         self.host = host
-        self.session = session()
+        self.client = Restclient(host=host, headers=headers)
         if headers:
-            self.session.headers.update(headers)
+            self.client.session.headers.update(headers)
 
     def post_v1_account_login(self, json: login_credentials_model, **kwargs) -> Response:
         """
@@ -17,8 +17,8 @@ class LoginApi:
         :param json: login_credentials_model
         :return:
         """
-        response = self.session.post(
-            url=f"{self.host}/v1/account/login",
+        response = self.client.post(
+            path="/v1/account/login",
             json=json,
             **kwargs
         )
@@ -30,8 +30,8 @@ class LoginApi:
         Logout as current user
         :return:
         """
-        response = self.session.delete(
-            url=f"{self.host}/v1/account/login",
+        response = self.client.delete(
+            path="/v1/account/login",
             **kwargs
         )
 
@@ -42,8 +42,8 @@ class LoginApi:
         Logout from every device
         :return:
         """
-        response = self.session.delete(
-            url=f"{self.host}/v1/account/login/all",
+        response = self.client.delete(
+            path="/v1/account/login/all",
             **kwargs
         )
 
