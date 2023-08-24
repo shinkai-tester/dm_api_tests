@@ -1,4 +1,5 @@
 import json
+import time
 
 from requests import Response
 
@@ -16,6 +17,7 @@ class MailhogApi:
         :param limit:
         :return:
         """
+        time.sleep(2)
         response = self.client.get(
             path="/api/v2/messages",
             params={
