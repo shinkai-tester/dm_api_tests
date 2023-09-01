@@ -1,8 +1,7 @@
 from requests import Response
 
+from dm_api_account.apis import UserEnvelopeModel, LoginCredentialsModel
 from restclient.restclient import Restclient
-from ..models.login_credentials_model import LoginCredentialsModel
-from ..models.user_envelope_model import UserEnvelopeModel
 
 
 class LoginApi:
