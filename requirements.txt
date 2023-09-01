@@ -3,3 +3,4 @@ pytest~=7.4.0
 Faker
 structlog~=23.1.0
 curlify~=2.2.1
+pydantic~=2.3.0

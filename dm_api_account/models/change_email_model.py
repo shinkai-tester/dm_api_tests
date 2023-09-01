@@ -1,13 +1,7 @@
-from faker import Faker
-
-fake = Faker()
-
-change_email_model = {
-    "login": "<string>",
-    "password": "<string>",
-    "email": "<string>"
-}
+from pydantic import BaseModel, StrictStr
 
 
-def get_new_email():
-    return fake.company_email()
+class ChangeEmailModel(BaseModel):
+    login: StrictStr
+    password: StrictStr
+    email: StrictStr
