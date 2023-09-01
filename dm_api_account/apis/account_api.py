@@ -1,12 +1,8 @@
 from requests import Response
-
 from restclient.restclient import Restclient
-from ..models.change_email_model import ChangeEmailModel
-from ..models.change_password_model import ChangePasswordModel
-from ..models.registration_model import RegistrationModel
-from ..models.reset_password_model import ResetPasswordModel
-from dm_api_account.models.user_envelope_model import UserEnvelopeModel
-from ..models.user_details_envelope_model import UserDetailsEnvelopeModel
+from dm_api_account.apis import (ChangeEmailModel, ChangePasswordModel,
+                                 RegistrationModel, ResetPasswordModel,
+                                 UserEnvelopeModel, UserDetailsEnvelopeModel)
 
 
 class AccountApi:
