@@ -1,7 +1,7 @@
 from requests import Response
-
-from dm_api_account.apis import UserEnvelopeModel, LoginCredentialsModel
+from ..models import *
 from restclient.restclient import Restclient
+from dm_api_account.utilities import validate_request_json, validate_status_code
 
 
 class LoginApi:
@@ -11,24 +11,37 @@ class LoginApi:
         if headers:
             self.client.session.headers.update(headers)
 
-    def post_v1_account_login(self, json: LoginCredentialsModel, **kwargs) -> Response:
+    def post_v1_account_login(
+            self,
+            json: LoginCredentials,
+            expected_status_code: int = 200,
+            **kwargs
+    ) -> UserEnvelope | Response:
         """
         Authenticate via credentials
+        :param expected_status_code:
         :param json: login_credentials_model
         :return:
         """
         response = self.client.post(
             path="/v1/account/login",
-            json=json.model_dump(by_alias=True, exclude_none=True),
+            json=validate_request_json(json),
             **kwargs
         )
 
-        UserEnvelopeModel(**response.json())
+        validate_status_code(response, expected_status_code)
+        if response.status_code == 200:
+            return UserEnvelope(**response.json())
         return response
 
-    def delete_v1_account_login(self, **kwargs) -> Response:
+    def delete_v1_account_login(
+            self,
+            expected_status_code: int = 204,
+            **kwargs
+    ) -> Response:
         """
         Logout as current user
+        :param expected_status_code:
         :return:
         """
         response = self.client.delete(
@@ -36,16 +49,25 @@ class LoginApi:
             **kwargs
         )
 
+        validate_status_code(response, expected_status_code)
+
         return response
 
-    def delete_v1_account_login_all(self, **kwargs) -> Response:
+    def delete_v1_account_login_all(
+            self,
+            expected_status_code: int = 204,
+            **kwargs
+    ) -> Response:
         """
         Logout from every device
+        :param expected_status_code:
         :return:
         """
         response = self.client.delete(
             path="/v1/account/login/all",
             **kwargs
         )
+
+        validate_status_code(response, expected_status_code)
 
         return response

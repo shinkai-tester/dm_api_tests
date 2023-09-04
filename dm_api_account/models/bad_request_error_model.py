@@ -1,10 +1,14 @@
-from typing import List, Dict
-from pydantic import StrictStr, BaseModel
+from typing import List, Dict, Optional
+from pydantic import StrictStr, BaseModel, Extra, Field
 
 
-class BadRequestErrorModel(BaseModel):
-    type: StrictStr
-    title: StrictStr
-    status: int
-    traceId: StrictStr
-    errors: Dict[str, List[str]]
+class BadRequestError(BaseModel):
+    class Config:
+        extra = Extra.forbid
+
+    message: Optional[StrictStr] = Field(None, description='Client message')
+    invalid_properties: Optional[Dict[str, List[StrictStr]]] = Field(
+        None,
+        alias='invalidProperties',
+        description='Key-value pairs of invalid request properties',
+    )

@@ -1,10 +1,10 @@
 from enum import Enum
 
 
-class Roles(Enum):
+class UserRole(Enum):
     GUEST = 'Guest'
     PLAYER = 'Player'
-    ADMINISTRATOR = 'Administrator'
+    ADMIN = 'Administrator'
     NANNY_MODERATOR = 'NannyModerator'
     REGULAR_MODERATOR = 'RegularModerator'
     SENIOR_MODERATOR = 'SeniorModerator'
