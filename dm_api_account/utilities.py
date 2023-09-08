@@ -5,7 +5,7 @@ from requests import Response
 def validate_request_json(json: str | BaseModel):
     if isinstance(json, dict):
         return json
-    return json.model_dump(by_alias=True, exclude_none=True)
+    return json.model_dump(exclude_none=True)
 
 
 def validate_status_code(response: Response, expected_status_code: int):

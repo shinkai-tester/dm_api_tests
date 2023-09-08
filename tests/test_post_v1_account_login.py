@@ -1,42 +1,40 @@
 from datetime import datetime
-from faker import Faker
-from hamcrest import assert_that, has_properties, has_string, starts_with
-from dm_api_account.models.login_credentials_model import LoginCredentials
-from dm_api_account.models.registration_model import Registration
+from hamcrest import assert_that, has_string, starts_with, has_entries
 from dm_api_account.models.roles import UserRole
-from services.dm_api_account import DmApiAccount
-from services.mailhog import MailhogApi
+from generic.helpers.data_generator import DataGeneratorHelper
+from services.dm_api_account import Facade
 
 
 def test_post_v1_account_login():
-    fake = Faker()
-    mailhog = MailhogApi(host='http://5.63.153.31:5025')
-    api = DmApiAccount(host="http://5.63.153.31:5051")
-    # Create user
-    login = "Sasha" + str(fake.random_int(min=1, max=9999))
-    registration_data = Registration(
+    """Test the process of registering, activating, and logging in a new user, and assert their initial properties."""
+
+    # Initialize helper and API client
+    data_helper = DataGeneratorHelper()
+    api = Facade(host="http://5.63.153.31:5051")
+
+    # Generate user data
+    login = data_helper.generate_login()
+    password = data_helper.generate_password()
+    email = data_helper.generate_email_with_login()
+
+    # Register and activate user
+    api.account.register_new_user(
         login=login,
-        email=login + "@example.com",
-        password="NewPass1234!"
+        email=email,
+        password=password
     )
-    api.account.post_v1_account(json=registration_data)
+    api.account.activate_registered_user(login=login)
 
-    # Initial activation of user with token
-    token = mailhog.get_token_from_last_email()
-    api.account.put_v1_account_token(token=token)
-
-    # Login as user
-    credentials = LoginCredentials(
-        login=registration_data.login,
-        password=registration_data.password,
-        rememberMe=True
-    )
-    response_login = api.login.post_v1_account_login(json=credentials)
-    assert_that(response_login.resource, has_properties(
+    # Login and assert properties of the user
+    response_login = api.login.login_user(
+        login=login,
+        password=password
+    ).json()
+    assert_that(response_login.get("resource"), has_entries(
         {
             "login": login,
-            "roles": [UserRole.GUEST, UserRole.PLAYER],
-            "rating": has_properties({
+            "roles": [UserRole.GUEST.value, UserRole.PLAYER.value],
+            "rating": has_entries({
                 "enabled": True,
                 "quality": 0,
                 "quantity": 0

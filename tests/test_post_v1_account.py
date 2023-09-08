@@ -1,24 +1,29 @@
 from hamcrest import assert_that, has_properties, has_length
-from services.dm_api_account import DmApiAccount
-from services.mailhog import MailhogApi
-from dm_api_account.models.registration_model import Registration
-from faker import Faker
+from generic.helpers.data_generator import DataGeneratorHelper
+from services.dm_api_account import Facade
 
 
 def test_post_v1_account():
-    fake = Faker()
-    mailhog = MailhogApi(host='http://5.63.153.31:5025')
-    api = DmApiAccount(host="http://5.63.153.31:5051")
-    login = "Sasha" + str(fake.random_int(min=1, max=9999))
-    json = Registration(
-        login=login,
-        email=login + "@example.com",
-        password="NewPass1234!"
-    )
-    api.account.post_v1_account(json=json)
+    """Test the registration and activation of a new user, and assert their initial properties."""
 
-    token = mailhog.get_token_from_last_email()
-    response_activate = api.account.put_v1_account_token(token=token)
+    # Initialize helper and API client
+    data_helper = DataGeneratorHelper()
+    api = Facade(host="http://5.63.153.31:5051")
+
+    # Generate user data
+    login = data_helper.generate_login()
+    password = data_helper.generate_password()
+    email = data_helper.generate_email_with_login()
+
+    # Register and activate user
+    api.account.register_new_user(
+        login=login,
+        email=email,
+        password=password
+    )
+
+    # Assert properties of activated user
+    response_activate = api.account.activate_registered_user(login=login)
     assert_that(response_activate.resource, has_properties(
         {
             "login": login,
@@ -30,3 +35,9 @@ def test_post_v1_account():
             })
         }
     ))
+
+    # Login the user
+    api.login.login_user(
+        login=login,
+        password=password
+    )

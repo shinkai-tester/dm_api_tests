@@ -1,5 +1,4 @@
 import uuid
-
 import requests.exceptions
 import structlog
 import curlify
@@ -14,12 +13,13 @@ structlog.configure(
 
 
 class Restclient:
-    def __init__(self, host, headers=None):
+    def __init__(self, host, headers=None, log_enabled=True):
         self.host = host
         self.session = session()
         if headers:
             self.session.headers.update(headers)
         self.log = structlog.get_logger(self.__class__.__name__).bind(service='api')
+        self.log_enabled = log_enabled
 
     def post(self, path: str, **kwargs) -> Response:
         return self._send_request('POST', path, **kwargs)
@@ -36,33 +36,35 @@ class Restclient:
     def _send_request(self, method, path, **kwargs):
         full_url = self.host + path
         log = self.log.bind(event_id=str(uuid.uuid4()))
-        log.msg(
-            event='request',
-            method=method,
-            full_url=full_url,
-            params=kwargs.get('params'),
-            headers=kwargs.get('headers'),
-            json=kwargs.get('json'),
-            data=kwargs.get('data')
-        )
+        if self.log_enabled:
+            log.msg(
+                event='request',
+                method=method,
+                full_url=full_url,
+                params=kwargs.get('params'),
+                headers=kwargs.get('headers'),
+                json=kwargs.get('json'),
+                data=kwargs.get('data')
+            )
         response = self.session.request(
             method=method,
             url=full_url,
             **kwargs
         )
 
-        curl = curlify.to_curl(response.request)
-        print(curl)
+        if self.log_enabled:
+            curl = curlify.to_curl(response.request)
+            print(curl)
 
-        log.msg(
-            event='response',
-            status_code=response.status_code,
-            headers=response.headers,
-            json=self._get_json(response),
-            text=response.text,
-            content=response.content,
-            curl=curl
-        )
+            log.msg(
+                event='response',
+                status_code=response.status_code,
+                headers=response.headers,
+                json=self._get_json(response),
+                text=response.text,
+                content=response.content,
+                curl=curl
+            )
 
         return response
 
@@ -72,3 +74,24 @@ class Restclient:
             return response.json()
         except requests.exceptions.JSONDecodeError:
             return
+
+
+def step(
+        before_message: str = '',
+        after_message: str = '',
+        log_it=True
+):
+    def wrapper(function):
+        def _wrap(*args, **kwargs):
+            dynamic_before_message = before_message.format(**kwargs)
+            dynamic_after_message = after_message.format(**kwargs)
+            if log_it:
+                print(f"\n{dynamic_before_message}")
+            result = function(*args, **kwargs)
+            if log_it:
+                print(f"\n{dynamic_after_message}")
+            return result
+
+        return _wrap
+
+    return wrapper

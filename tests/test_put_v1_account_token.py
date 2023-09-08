@@ -1,27 +1,35 @@
-from faker import Faker
 from hamcrest import assert_that, has_properties, greater_than_or_equal_to
-from dm_api_account.models.registration_model import Registration
 from dm_api_account.models.roles import UserRole
-from services.dm_api_account import DmApiAccount
-from services.mailhog import MailhogApi
+from generic.helpers.data_generator import DataGeneratorHelper
+from services.dm_api_account import Facade
 
 
 def test_put_v1_account_token():
-    fake = Faker()
-    mailhog = MailhogApi(host='http://5.63.153.31:5025')
-    api = DmApiAccount(host="http://5.63.153.31:5051")
-    # Create user
-    login = "Sasha" + str(fake.random_int(min=1, max=9999))
-    registration_data = Registration(
-        login=login,
-        email=login + "@example.com",
-        password="NewPass1234!"
-    )
-    api.account.post_v1_account(json=registration_data)
+    """
+    Test the process of user registration and activation via token.
+    """
 
-    # Get token from email and activate created user
-    token = mailhog.get_token_from_last_email()
-    response = api.account.put_v1_account_token(token=token)
+    # Initialize helper and API client
+    data_helper = DataGeneratorHelper()
+    api = Facade(host="http://5.63.153.31:5051")
+
+    # Generate data for a new user
+    login = data_helper.generate_login()
+    password = data_helper.generate_password()
+    email = data_helper.generate_email_with_login()
+
+    # Register the new user
+    api.account.register_new_user(
+        login=login,
+        password=password,
+        email=email
+    )
+
+    # Activate the user using a token from their email
+    response = api.account.activate_registered_user(
+        login=login
+    )
+
     assert_that(response.resource, has_properties(
         {
             "login": login,

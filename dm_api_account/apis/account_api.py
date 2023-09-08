@@ -144,5 +144,4 @@ class AccountApi:
         validate_status_code(response, expected_status_code)
         if response.status_code == 200:
             return UserDetailsEnvelope(**response.json())
-
         return response

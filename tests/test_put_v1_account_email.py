@@ -1,36 +1,35 @@
-from faker import Faker
 from hamcrest import has_properties, assert_that, greater_than_or_equal_to, all_of, only_contains, has_length
-from dm_api_account.models.change_email_model import ChangeEmail
-from dm_api_account.models.registration_model import Registration
 from dm_api_account.models.roles import UserRole
-from services.dm_api_account import DmApiAccount
-from services.mailhog import MailhogApi
+from generic.helpers.data_generator import DataGeneratorHelper
+from services.dm_api_account import Facade
 
 
 def test_put_v1_account_email():
-    fake = Faker()
-    mailhog = MailhogApi(host='http://5.63.153.31:5025')
-    api = DmApiAccount(host="http://5.63.153.31:5051")
-    # Create user
-    login = "Sasha" + str(fake.random_int(min=1, max=9999))
-    registration_data = Registration(
-        login=login,
-        email=login + "@example.com",
-        password="NewPass1234!"
-    )
-    api.account.post_v1_account(json=registration_data)
+    """Test the process of changing a user's email and re-activating the account."""
 
-    # Initial activation of user with token
-    token = mailhog.get_token_from_last_email()
-    api.account.put_v1_account_token(token=token)
+    # Initialize helper and API client
+    data_helper = DataGeneratorHelper()
+    api = Facade(host="http://5.63.153.31:5051")
+
+    # Generate user data
+    login = data_helper.generate_login()
+    password = data_helper.generate_password()
+    email = data_helper.generate_email_with_login()
+
+    # Register and activate user
+    api.account.register_new_user(
+        login=login,
+        email=email,
+        password=password
+    )
+    api.account.activate_registered_user(login=login)
 
     # Change user's email
-    json = ChangeEmail(
-        login=registration_data.login,
-        password=registration_data.password,
-        email=fake.company_email()
+    response_change_email = api.account.change_user_email(
+        login=login,
+        password=password,
+        email=data_helper.generate_email()
     )
-    response_change_email = api.account.put_v1_account_email(json=json)
     assert_that(response_change_email.resource, has_properties(
         {
             "login": login,
@@ -52,6 +51,5 @@ def test_put_v1_account_email():
         }
     ))
 
-    # It is needed to activate user again after email changing
-    upd_token = mailhog.get_token_from_last_email()
-    api.account.put_v1_account_token(token=upd_token)
+    # Reactivate user, as changing the email usually requires reactivation
+    api.account.activate_registered_user(login=login)
