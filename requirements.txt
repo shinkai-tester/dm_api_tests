@@ -5,3 +5,5 @@ structlog~=23.1.0
 curlify~=2.2.1
 pydantic~=2.3.0
 pyhamcrest~=2.0.4
+psycopg2~=2.9.7
+records~=0.5.3
