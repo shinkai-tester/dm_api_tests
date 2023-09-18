@@ -42,18 +42,18 @@ def assertions(orm_db):
 
 @pytest.fixture
 def prepare_user(dm_api_facade, orm_db, data_helper):
+    pattern = "Shurka%"
+    orm_db.delete_users_by_login_pattern(pattern=pattern)
+    get_users_from_db = orm_db.get_users_by_login_pattern(pattern=pattern)
+    assert len(get_users_from_db) == 0, f'User(s) with pattern {pattern} exist in DB'
+    dm_api_facade.mailhog.delete_all_messages()
     login = data_helper.generate_login()
     password = data_helper.generate_password()
     email = data_helper.generate_email_with_login()
     user = namedtuple('User', 'login, email, password')
     User = user(login=login, email=email, password=password)
 
-    yield User
-
-    orm_db.delete_user_by_login(login=User.login)
-    get_user_from_db = orm_db.get_user_by_login(login=User.login)
-    assert len(get_user_from_db) == 0, f'User with {User.login} is not deleted'
-    dm_api_facade.mailhog.delete_all_messages()
+    return User
 
 
 @pytest.fixture()

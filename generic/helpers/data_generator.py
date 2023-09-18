@@ -16,5 +16,5 @@ class DataGeneratorHelper:
         return self.faker.password()
 
     def generate_login(self):
-        login = "Sasha" + str(self.faker.random_int(min=1, max=9999))
+        login = "Shurka" + str(self.faker.random_int(min=1, max=9999))
         return login

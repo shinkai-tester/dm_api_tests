@@ -1,3 +1,9 @@
+from datetime import datetime
+from hamcrest import assert_that, has_entries, has_string, starts_with
+
+from dm_api_account.models.roles import UserRole
+
+
 def test_post_v1_account_login(dm_api_facade, data_helper, prepare_user, assertions):
     """Test the process of registering, activating, and logging in a new user, and assert their initial properties."""
 
@@ -16,12 +22,16 @@ def test_post_v1_account_login(dm_api_facade, data_helper, prepare_user, asserti
     response_login = dm_api_facade.login.login_user(
         login=login,
         password=password
-    )
-
-    assertions.assert_json_value_by_name(
-        response=response_login,
-        name="login",
-        expected_value=login,
-        error_message=f"User login is not equal to {login}",
-        path=["resource"]
-    )
+    ).json()
+    assert_that(response_login.get("resource"), has_entries(
+        {
+            "login": login,
+            "roles": [UserRole.GUEST.value, UserRole.PLAYER.value],
+            "rating": has_entries({
+                "enabled": True,
+                "quality": 0,
+                "quantity": 0
+            }),
+            "registration": has_string(starts_with(str(datetime.utcnow().date())))
+        }
+    ))

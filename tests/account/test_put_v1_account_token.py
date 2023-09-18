@@ -1,3 +1,8 @@
+from hamcrest import assert_that, has_properties, greater_than_or_equal_to
+
+from dm_api_account.models.roles import UserRole
+
+
 def test_put_v1_account_token(dm_api_facade, data_helper, prepare_user, assertions):
     """
     Test the process of user registration and activation via token.
@@ -18,10 +23,14 @@ def test_put_v1_account_token(dm_api_facade, data_helper, prepare_user, assertio
         login=login
     )
 
-    assertions.assert_json_value_by_name(
-        response=response,
-        name="login",
-        expected_value=login,
-        error_message=f"User login is not equal to {login}",
-        path=["resource"]
-    )
+    assert_that(response.resource, has_properties(
+        {
+            "login": login,
+            "roles": [UserRole.GUEST, UserRole.PLAYER],
+            "rating": has_properties({
+                "enabled": True,
+                "quality": greater_than_or_equal_to(0),
+                "quantity": greater_than_or_equal_to(0)
+            })
+        }
+    ))

@@ -57,6 +57,15 @@ class TestPostV1Account:
 
         if status_code == 201:
             assertions.assert_user_was_created(login=login)
+            # Activate registered user using DB
+            orm_db.set_activated_flag_by_login(login=login)
+            assertions.assert_user_was_activated(login=login)
+
+            # Login as user
+            dm_api_facade.login.login_user(
+                login=login,
+                password=password
+            )
         else:
             assertions.assert_json_value_by_name(
                 response=response,

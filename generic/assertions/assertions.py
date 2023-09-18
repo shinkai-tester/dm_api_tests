@@ -39,25 +39,6 @@ class Assertions:
         assert_that(response.json().get("errors"), equal_to(check))
 
     @staticmethod
-    def assert_json_has_key(response: Response, name):
-        try:
-            response_as_dict = response.json()
-        except json.JSONDecodeError:
-            assert False, f"Response is not in JSON format. Response text is '{response.text}'"
-
-        assert name in response_as_dict, f"Response JSON doesn't have key '{name}'"
-
-    @staticmethod
-    def assert_json_has_keys(response: Response, names: list):
-        try:
-            response_as_dict = response.json()
-        except json.JSONDecodeError:
-            assert False, f"Response is not in JSON format. Response text is '{response.text}'"
-
-        for name in names:
-            assert name in response_as_dict, f"Response JSON should have key '{name}'. But it's not present"
-
-    @staticmethod
     def get_value_from_structure(data, path=None):
         """Get a value from a nested structure (dict or object) based on a provided path."""
         if path:

@@ -1,4 +1,4 @@
-def test_put_v1_account_password(dm_api_facade, data_helper, prepare_user):
+def test_put_v1_account_password(dm_api_facade, data_helper, prepare_user, assertions):
     """Test that a user can successfully reset and change their password."""
 
     # Register and activate user
@@ -27,8 +27,15 @@ def test_put_v1_account_password(dm_api_facade, data_helper, prepare_user):
 
     # Generate a new password and change it
     new_password = data_helper.generate_password()
-    dm_api_facade.account.change_user_password(
+    response_change_password = dm_api_facade.account.change_user_password(
         login=login,
         old_password=password,
         new_password=new_password
+    )
+    assertions.assert_json_value_by_name(
+        response=response_change_password,
+        name="login",
+        expected_value=login,
+        error_message=f"User login is not as expected: {login}",
+        path=["resource"]
     )

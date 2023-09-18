@@ -21,10 +21,26 @@ class OrmDatabase:
         dataset = self.db.send_query(query)
         return dataset
 
+    def get_users_by_login_pattern(self, pattern: str) -> List[User]:
+        query = (
+            select(User)
+            .where(User.Login.like(pattern))
+        )
+        dataset = self.db.send_query(query)
+        return dataset
+
     def delete_user_by_login(self, login: str):
         query = (
             delete(User)
             .where(User.Login == login)
+        )
+        dataset = self.db.send_bulk_query(query)
+        return dataset
+
+    def delete_users_by_login_pattern(self, pattern: str):
+        query = (
+            delete(User)
+            .where(User.Login.like(pattern))
         )
         dataset = self.db.send_bulk_query(query)
         return dataset
