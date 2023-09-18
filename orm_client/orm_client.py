@@ -2,12 +2,6 @@ import uuid
 import structlog
 from sqlalchemy import create_engine
 
-structlog.configure(
-    processors=[
-        structlog.processors.JSONRenderer(indent=4, sort_keys=True, ensure_ascii=False)
-    ]
-)
-
 
 class OrmClient:
     def __init__(self, user, password, host, database, isolation_level='AUTOCOMMIT'):

@@ -2,14 +2,7 @@ import uuid
 import requests.exceptions
 import structlog
 import curlify
-
 from requests import session, Response
-
-structlog.configure(
-    processors=[
-        structlog.processors.JSONRenderer(indent=4, sort_keys=True, ensure_ascii=False)
-    ]
-)
 
 
 class Restclient:

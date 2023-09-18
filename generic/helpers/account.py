@@ -19,13 +19,14 @@ class Account:
         before_message='Initializing new user registration for {login}...',
         after_message='New user registration completed for {login}.'
     )
-    def register_new_user(self, login: str, email: str, password: str):
+    def register_new_user(self, login: str, email: str, password: str, status_code: int = 201):
         response = self.facade.account_api.post_v1_account(
             json=Registration(
                 login=login,
                 email=email,
                 password=password
-            )
+            ),
+            expected_status_code=status_code
         )
         return response
 
