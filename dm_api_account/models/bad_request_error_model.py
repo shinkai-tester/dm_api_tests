@@ -1,10 +1,9 @@
 from typing import List, Dict, Optional
-from pydantic import StrictStr, BaseModel, Extra, Field
+from pydantic import StrictStr, BaseModel, Field, ConfigDict
 
 
 class BadRequestError(BaseModel):
-    class Config:
-        extra = Extra.forbid
+    model_config = ConfigDict(extra='forbid')
 
     message: Optional[StrictStr] = Field(None, description='Client message')
     invalid_properties: Optional[Dict[str, List[StrictStr]]] = Field(

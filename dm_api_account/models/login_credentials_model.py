@@ -1,10 +1,9 @@
 from typing import Optional
-from pydantic import BaseModel, StrictStr, Field, Extra
+from pydantic import BaseModel, StrictStr, Field, ConfigDict
 
 
 class LoginCredentials(BaseModel):
-    class Config:
-        extra = Extra.forbid
+    model_config = ConfigDict(extra='forbid')
 
     login: Optional[StrictStr] = None
     password: Optional[StrictStr] = None

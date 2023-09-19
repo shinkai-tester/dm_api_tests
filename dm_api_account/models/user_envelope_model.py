@@ -1,14 +1,13 @@
 from __future__ import annotations
 from datetime import datetime
 from typing import Any, List, Optional
-from pydantic import BaseModel, Extra, Field, StrictStr
+from pydantic import BaseModel, Field, StrictStr, ConfigDict
 from dm_api_account.models.rating import Rating
 from dm_api_account.models.roles import UserRole
 
 
 class User(BaseModel):
-    class Config:
-        extra = Extra.forbid
+    model_config = ConfigDict(extra='forbid')
 
     login: Optional[StrictStr] = Field(None, description='Login')
     roles: Optional[List[UserRole]] = Field(None, description='Roles')
@@ -29,8 +28,7 @@ class User(BaseModel):
 
 
 class UserEnvelope(BaseModel):
-    class Config:
-        extra = Extra.forbid
+    model_config = ConfigDict(extra='forbid')
 
     resource: Optional[User] = None
     metadata: Optional[Any] = Field(None, description='Additional metadata')

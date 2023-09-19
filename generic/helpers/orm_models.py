@@ -1,7 +1,6 @@
 from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, Integer, SmallInteger, String, Text, text
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship, declarative_base
 
 Base = declarative_base()
 metadata = Base.metadata
@@ -407,8 +406,8 @@ class RoomClaim(Base):
     RoomId = Column(ForeignKey('Rooms.RoomId', ondelete='CASCADE'), nullable=False, index=True)
     Policy = Column(Integer, nullable=False)
 
-    Character = relationship('Character')
-    Reader = relationship('Reader')
+    Character = relationship('Character', overlaps="Reader")
+    Reader = relationship('Reader', overlaps="Character")
     Room = relationship('Room')
 
 

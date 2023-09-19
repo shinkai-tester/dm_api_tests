@@ -8,3 +8,4 @@ pyhamcrest~=2.0.4
 psycopg2~=2.9.7
 records~=0.5.3
 SQLAlchemy~=2.0.20
+vyper-config~=1.1.1

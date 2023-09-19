@@ -2,7 +2,7 @@ from __future__ import annotations
 from datetime import datetime
 from enum import Enum
 from typing import Any, List, Optional
-from pydantic import BaseModel, Extra, Field, StrictStr
+from pydantic import BaseModel, Field, StrictStr, ConfigDict
 from dm_api_account.models.rating import Rating
 from dm_api_account.models.roles import UserRole
 
@@ -23,16 +23,14 @@ class ColorSchema(Enum):
 
 
 class InfoBbText(BaseModel):
-    class Config:
-        extra = Extra.forbid
+    model_config = ConfigDict(extra='forbid')
 
     value: Optional[StrictStr] = Field(None, description='Text')
     parse_mode: Optional[BbParseMode] = Field(None, alias='parseMode')
 
 
 class PagingSettings(BaseModel):
-    class Config:
-        extra = Extra.forbid
+    model_config = ConfigDict(extra='forbid')
 
     posts_per_page: Optional[int] = Field(
         None, alias='postsPerPage', description='Number of posts on a game room page'
@@ -58,8 +56,7 @@ class PagingSettings(BaseModel):
 
 
 class UserSettings(BaseModel):
-    class Config:
-        extra = Extra.forbid
+    model_config = ConfigDict(extra='forbid')
 
     color_schema: Optional[ColorSchema] = Field(None, alias='colorSchema')
     nanny_greetings_message: Optional[StrictStr] = Field(
@@ -71,8 +68,7 @@ class UserSettings(BaseModel):
 
 
 class UserDetails(BaseModel):
-    class Config:
-        extra = Extra.forbid
+    model_config = ConfigDict(extra='forbid')
 
     login: Optional[StrictStr] = Field(None, description='Login')
     roles: Optional[List[UserRole]] = Field(None, description='Roles')
@@ -100,8 +96,7 @@ class UserDetails(BaseModel):
 
 
 class UserDetailsEnvelope(BaseModel):
-    class Config:
-        extra = Extra.forbid
+    model_config = ConfigDict(extra='forbid')
 
     resource: Optional[UserDetails] = None
     metadata: Optional[Any] = Field(None, description='Additional metadata')

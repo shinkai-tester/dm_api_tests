@@ -1,9 +1,8 @@
 from typing import Optional
-from pydantic import StrictStr, BaseModel, Extra, Field
+from pydantic import StrictStr, BaseModel, Field, ConfigDict
 
 
 class GeneralError(BaseModel):
-    class Config:
-        extra = Extra.forbid
+    model_config = ConfigDict(extra='forbid')
 
     message: Optional[StrictStr] = Field(None, description='Client message')

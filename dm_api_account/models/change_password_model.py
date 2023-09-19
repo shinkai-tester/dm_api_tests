@@ -1,11 +1,10 @@
 from __future__ import annotations
 from typing import Optional
-from pydantic import BaseModel, StrictStr, Field, Extra
+from pydantic import BaseModel, StrictStr, Field, ConfigDict
 
 
 class ChangePassword(BaseModel):
-    class Config:
-        extra = Extra.forbid
+    model_config = ConfigDict(extra='forbid')
 
     login: Optional[StrictStr] = Field(None, description='User login')
     token: Optional[StrictStr] = Field(None, description='Password reset token')
