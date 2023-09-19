@@ -1,7 +1,6 @@
 def test_put_v1_account_email(dm_api_facade, prepare_user, data_helper, assertions):
     """Test the process of changing a user's email and re-activating the account."""
 
-    # Register and activate user
     login = prepare_user.login
     email = prepare_user.email
     password = prepare_user.password
@@ -12,7 +11,6 @@ def test_put_v1_account_email(dm_api_facade, prepare_user, data_helper, assertio
     )
     dm_api_facade.account.activate_registered_user(login=login)
 
-    # Change user's email
     response_change_email = dm_api_facade.account.change_user_email(
         login=login,
         password=password,
@@ -26,5 +24,4 @@ def test_put_v1_account_email(dm_api_facade, prepare_user, data_helper, assertio
         path=["resource"]
     )
 
-    # Reactivate user, as changing the email usually requires reactivation
     dm_api_facade.account.activate_registered_user(login=login)

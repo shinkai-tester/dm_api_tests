@@ -1,7 +1,6 @@
 def test_put_v1_account_password(dm_api_facade, data_helper, prepare_user, assertions):
     """Test that a user can successfully reset and change their password."""
 
-    # Register and activate user
     login = prepare_user.login
     email = prepare_user.email
     password = prepare_user.password
@@ -12,20 +11,17 @@ def test_put_v1_account_password(dm_api_facade, data_helper, prepare_user, asser
     )
     dm_api_facade.account.activate_registered_user(login=login)
 
-    # Authenticate and set token
     auth_token = dm_api_facade.login.get_auth_token(
         login=login,
         password=password
     )
     dm_api_facade.account.set_headers(headers=auth_token)
 
-    # Reset password
     dm_api_facade.account.reset_user_password(
         login=login,
         email=email
     )
 
-    # Generate a new password and change it
     new_password = data_helper.generate_password()
     response_change_password = dm_api_facade.account.change_user_password(
         login=login,

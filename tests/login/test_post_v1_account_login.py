@@ -7,7 +7,6 @@ from dm_api_account.models.roles import UserRole
 def test_post_v1_account_login(dm_api_facade, data_helper, prepare_user, assertions):
     """Test the process of registering, activating, and logging in a new user, and assert their initial properties."""
 
-    # Register and activate user
     login = prepare_user.login
     email = prepare_user.email
     password = prepare_user.password
@@ -18,7 +17,6 @@ def test_post_v1_account_login(dm_api_facade, data_helper, prepare_user, asserti
     )
     dm_api_facade.account.activate_registered_user(login=login)
 
-    # Login and assert properties of the user
     response_login = dm_api_facade.login.login_user(
         login=login,
         password=password

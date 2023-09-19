@@ -3,8 +3,7 @@ from pydantic import BaseModel, Field, ConfigDict
 
 
 class Rating(BaseModel):
-    class Config:
-        model_config = ConfigDict(extra='forbid')
+    model_config = ConfigDict(extra='forbid')
 
     enabled: Optional[bool] = Field(None, description='Rating participation flag')
     quality: Optional[int] = Field(None, description='Quality rating')

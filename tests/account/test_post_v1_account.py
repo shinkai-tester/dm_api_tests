@@ -6,7 +6,6 @@ class TestPostV1Account:
     def test_create_user_success(self, dm_api_facade, orm_db, data_helper, prepare_user, assertions):
         """Test the registration and activation of a new user, and assert their initial properties."""
 
-        # Register new user
         login = prepare_user.login
         email = prepare_user.email
         password = prepare_user.password
@@ -18,11 +17,9 @@ class TestPostV1Account:
         )
         assertions.assert_user_was_created(login=login)
 
-        # Activate registered user using DB
         orm_db.set_activated_flag_by_login(login=login)
         assertions.assert_user_was_activated(login=login)
 
-        # Login as user
         dm_api_facade.login.login_user(
             login=login,
             password=password
@@ -57,11 +54,9 @@ class TestPostV1Account:
 
         if status_code == 201:
             assertions.assert_user_was_created(login=login)
-            # Activate registered user using DB
             orm_db.set_activated_flag_by_login(login=login)
             assertions.assert_user_was_activated(login=login)
 
-            # Login as user
             dm_api_facade.login.login_user(
                 login=login,
                 password=password

@@ -8,7 +8,6 @@ from dm_api_account.models.roles import UserRole
 def test_get_v1_account(dm_api_facade, prepare_user, assertions):
     """Test that a user can register, activate, and retrieve their info."""
 
-    # Register and activate user
     login = prepare_user.login
     email = prepare_user.email
     password = prepare_user.password
@@ -19,14 +18,12 @@ def test_get_v1_account(dm_api_facade, prepare_user, assertions):
     )
     dm_api_facade.account.activate_registered_user(login=login)
 
-    # Authenticate and set token
     token = dm_api_facade.login.get_auth_token(
         login=login,
         password=password
     )
     dm_api_facade.account.set_headers(headers=token)
 
-    # Retrieve and validate user info
     response_user_info = dm_api_facade.account.get_current_user_info()
 
     assert_that(response_user_info.resource, has_properties({
