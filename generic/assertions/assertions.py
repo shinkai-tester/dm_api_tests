@@ -1,38 +1,41 @@
 import time
-import json
+import allure
 from hamcrest import assert_that, has_properties, equal_to
 from requests import Response
+from generic.helpers.orm_db import OrmDatabase
 
 
 class Assertions:
-    def __init__(self, orm_db):
+    def __init__(self, orm_db: OrmDatabase):
         self.orm_db = orm_db
 
     def assert_user_was_created(self, login):
-        dataset = self.orm_db.get_user_by_login(login=login)
-        for row in dataset:
-            assert_that(row, has_properties(
-                {
-                    'Login': login,
-                    'Activated': False
-                }
-            ))
+        with allure.step("Assert that the user has been created"):
+            dataset = self.orm_db.get_user_by_login(login=login)
+            for row in dataset:
+                assert_that(row, has_properties(
+                    {
+                        'Login': login,
+                        'Activated': False
+                    }
+                ))
 
     def assert_user_was_activated(self, login):
-        def check_activation():
-            data = self.orm_db.get_user_by_login(login=login)
-            for r in data:
-                if r.Activated:
-                    return True
-            return False
+        with allure.step("Assert that the user has been activated"):
+            def check_activation():
+                data = self.orm_db.get_user_by_login(login=login)
+                for r in data:
+                    if r.Activated:
+                        return True
+                return False
 
-        end_time = time.time() + 5  # 5 seconds timeout
-        while time.time() < end_time:
-            if check_activation():
-                break
-            time.sleep(1)
-        else:
-            assert False, f'User {login} was not activated in time'
+            end_time = time.time() + 5  # 5 seconds timeout
+            while time.time() < end_time:
+                if check_activation():
+                    break
+                time.sleep(1)
+            else:
+                assert False, f'User {login} was not activated in time'
 
     @staticmethod
     def assert_error_user_creation(check: dict, response: Response):

@@ -6,7 +6,7 @@ from dm_api_account.models.roles import UserRole
 
 
 def test_get_v1_account(dm_api_facade, prepare_user, assertions):
-    """Test that a user can register, activate, and retrieve their info."""
+    """Test that a user can register, activate, and retrieve their info"""
 
     login = prepare_user.login
     email = prepare_user.email

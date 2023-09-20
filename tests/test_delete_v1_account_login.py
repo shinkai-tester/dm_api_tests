@@ -1,5 +1,5 @@
-def test_delete_v1_account_login_all(dm_api_facade, prepare_user):
-    """Test that a user can successfully log out."""
+def test_delete_v1_account_login(dm_api_facade, prepare_user):
+    """Test that a user can successfully log out"""
 
     login = prepare_user.login
     email = prepare_user.email
@@ -18,4 +18,4 @@ def test_delete_v1_account_login_all(dm_api_facade, prepare_user):
     )
     dm_api_facade.login.set_headers(headers=token)
 
-    dm_api_facade.login.logout_user_from_all_devices()
+    dm_api_facade.login.logout_user()

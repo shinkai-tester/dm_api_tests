@@ -1,3 +1,4 @@
+import allure
 from requests import Response
 from restclient.restclient import Restclient
 from ..models import *
@@ -23,11 +24,12 @@ class AccountApi:
         :param json: registration_model
         :return:
         """
-        response = self.client.post(
-            path="/v1/account",
-            json=validate_request_json(json),
-            **kwargs
-        )
+        with allure.step("New user registration"):
+            response = self.client.post(
+                path="/v1/account",
+                json=validate_request_json(json),
+                **kwargs
+            )
 
         validate_status_code(response, expected_status_code)
         return response
@@ -44,11 +46,12 @@ class AccountApi:
         :param json: reset_password_model
         :return:
         """
-        response = self.client.post(
-            path="/v1/account/password",
-            json=validate_request_json(json),
-            **kwargs
-        )
+        with allure.step("User password reset"):
+            response = self.client.post(
+                path="/v1/account/password",
+                json=validate_request_json(json),
+                **kwargs
+            )
 
         validate_status_code(response, expected_status_code)
         if response.status_code == 201:
@@ -68,11 +71,12 @@ class AccountApi:
         :param json: change_email_model
         :return:
         """
-        response = self.client.put(
-            path="/v1/account/email",
-            json=validate_request_json(json),
-            **kwargs
-        )
+        with allure.step("Change user email"):
+            response = self.client.put(
+                path="/v1/account/email",
+                json=validate_request_json(json),
+                **kwargs
+            )
 
         validate_status_code(response, expected_status_code)
         if response.status_code == 200:
@@ -91,11 +95,12 @@ class AccountApi:
         :param json: change_password_model
         :return:
         """
-        response = self.client.put(
-            path="/v1/account/password",
-            json=validate_request_json(json),
-            **kwargs
-        )
+        with allure.step("Change user password"):
+            response = self.client.put(
+                path="/v1/account/password",
+                json=validate_request_json(json),
+                **kwargs
+            )
 
         validate_status_code(response, expected_status_code)
         if response.status_code == 200:
@@ -114,11 +119,11 @@ class AccountApi:
         :param token: str
         :return:
         """
-
-        response = self.client.put(
-            path=f"/v1/account/{token}",
-            **kwargs
-        )
+        with allure.step("Activate user"):
+            response = self.client.put(
+                path=f"/v1/account/{token}",
+                **kwargs
+            )
 
         validate_status_code(response, expected_status_code)
         if response.status_code == 200:
@@ -135,11 +140,11 @@ class AccountApi:
         :param expected_status_code:
         :return:
         """
-
-        response = self.client.get(
-            path="/v1/account",
-            **kwargs
-        )
+        with allure.step("Get user details"):
+            response = self.client.get(
+                path="/v1/account",
+                **kwargs
+            )
 
         validate_status_code(response, expected_status_code)
         if response.status_code == 200:

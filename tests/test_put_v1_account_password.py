@@ -1,5 +1,5 @@
 def test_put_v1_account_password(dm_api_facade, data_helper, prepare_user, assertions):
-    """Test that a user can successfully reset and change their password."""
+    """Test that a user can successfully reset and change their password"""
 
     login = prepare_user.login
     email = prepare_user.email

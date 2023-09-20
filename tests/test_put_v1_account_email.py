@@ -1,5 +1,5 @@
 def test_put_v1_account_email(dm_api_facade, prepare_user, data_helper, assertions):
-    """Test the process of changing a user's email and re-activating the account."""
+    """Test the process of changing a user's email and re-activating the account"""
 
     login = prepare_user.login
     email = prepare_user.email

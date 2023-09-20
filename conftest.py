@@ -1,10 +1,15 @@
+from collections import namedtuple
+from pathlib import Path
+
+import allure
 import pytest
 import structlog
 from vyper import v
-from pathlib import Path
-from collections import namedtuple
+import os
+
 from generic.assertions.assertions import Assertions
 from generic.helpers.data_generator import DataGeneratorHelper
+from generic.helpers.dm_db import DmDatabase
 from generic.helpers.mailhog import MailhogApi
 from generic.helpers.orm_db import OrmDatabase
 from services.dm_api_account import Facade
@@ -45,6 +50,22 @@ def orm_db():
     db.db.close_connection()
 
 
+connect = None
+
+
+@pytest.fixture
+def dm_db():
+    global connect
+    if connect is None:
+        connect = DmDatabase(
+            user=v.get('database.dm3_5.user'),
+            password=v.get('database.dm3_5.password'),
+            host=v.get('database.dm3_5.host'),
+            database=v.get('database.dm3_5.database'))
+    yield connect
+    connect.db.db.close()
+
+
 @pytest.fixture
 def data_helper():
     """Fixture to set up the Data Generator Helper."""
@@ -57,6 +78,7 @@ def assertions(orm_db):
     return Assertions(orm_db)
 
 
+@allure.step("Preparation of user data")
 @pytest.fixture
 def prepare_user(dm_api_facade, orm_db, data_helper):
     """Fixture to prepare a user for tests."""
@@ -126,3 +148,19 @@ def pytest_addoption(parser):
     parser.addoption('--env', action='store', default='stg')
     for option in options:
         parser.addoption(f'--{option}', action='store', default=None)
+
+
+@pytest.fixture(autouse=True)
+def set_allure_environment(request, set_config):
+    environment = request.config.getoption('--env')
+    allure_dir = request.config.getoption('--alluredir')
+
+    dm_api_account = v.get('service.dm_api_account')
+    mailhog = v.get('service.mailhog')
+    db_host = v.get('database.dm3_5.host')
+
+    with open(os.path.join(allure_dir, 'environment.properties'), 'w') as f:
+        f.write(f"Environment={environment}\n")
+        f.write(f"DM_API_Account={dm_api_account}\n")
+        f.write(f"Mailhog={mailhog}\n")
+        f.write(f"DB_Host={db_host}\n")

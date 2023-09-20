@@ -5,7 +5,7 @@ from dm_api_account.models.roles import UserRole
 
 def test_put_v1_account_token(dm_api_facade, data_helper, prepare_user, assertions):
     """
-    Test the process of user registration and activation via token.
+    Test the process of user registration and activation via token
     """
 
     login = prepare_user.login

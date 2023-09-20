@@ -1,3 +1,4 @@
+import allure
 from requests import Response
 from ..models import *
 from restclient.restclient import Restclient
@@ -23,11 +24,13 @@ class LoginApi:
         :param json: login_credentials_model
         :return:
         """
-        response = self.client.post(
-            path="/v1/account/login",
-            json=validate_request_json(json),
-            **kwargs
-        )
+
+        with allure.step("User authorization"):
+            response = self.client.post(
+                path="/v1/account/login",
+                json=validate_request_json(json),
+                **kwargs
+            )
 
         validate_status_code(response, expected_status_code)
         if response.status_code == 200:
@@ -44,10 +47,11 @@ class LoginApi:
         :param expected_status_code:
         :return:
         """
-        response = self.client.delete(
-            path="/v1/account/login",
-            **kwargs
-        )
+        with allure.step("User logout"):
+            response = self.client.delete(
+                path="/v1/account/login",
+                **kwargs
+            )
 
         validate_status_code(response, expected_status_code)
 
@@ -63,10 +67,11 @@ class LoginApi:
         :param expected_status_code:
         :return:
         """
-        response = self.client.delete(
-            path="/v1/account/login/all",
-            **kwargs
-        )
+        with allure.step("User logout from all devices"):
+            response = self.client.delete(
+                path="/v1/account/login/all",
+                **kwargs
+            )
 
         validate_status_code(response, expected_status_code)
 

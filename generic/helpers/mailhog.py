@@ -1,5 +1,7 @@
 import json
 import time
+
+import allure
 from requests import Response
 from restclient.restclient import Restclient
 
@@ -15,13 +17,14 @@ class MailhogApi:
         :param limit:
         :return:
         """
-        time.sleep(2)
-        response = self.client.get(
-            path="/api/v2/messages",
-            params={
-                'limit': limit
-            }
-        )
+        with allure.step(f"Get {limit} emails from MailHog"):
+            time.sleep(2)
+            response = self.client.get(
+                path="/api/v2/messages",
+                params={
+                    'limit': limit
+                }
+            )
 
         return response
 
@@ -30,24 +33,27 @@ class MailhogApi:
         Get user activation token from last email
         :return:
         """
-        emails = self.get_api_v2_messages(limit=1).json()
-        token_url = json.loads(emails['items'][0]['Content']['Body']).get('ConfirmationLinkUrl')
-        token = token_url.split("/")[-1]
+        with allure.step(f"Get token from last email in MailHog"):
+            emails = self.get_api_v2_messages(limit=1).json()
+            token_url = json.loads(emails['items'][0]['Content']['Body']).get('ConfirmationLinkUrl')
+            token = token_url.split("/")[-1]
         return token
 
     def get_token_by_login(self, login: str, token_type: str = 'registration', attempt=5):
-        if attempt == 0:
-            raise AssertionError(f'E-Mail with login {login} can not be found')
-        emails = self.get_api_v2_messages(limit=50).json().get('items')
-        token_key = "ConfirmationLinkUrl" if token_type == 'registration' else "ConfirmationLinkUri"
-        for email in emails:
-            user_data = json.loads(email['Content']['Body'])
-            if login == user_data.get('Login'):
-                token = user_data.get(token_key).split("/")[-1]
-                return token
-        time.sleep(2)
+        with allure.step(f"Get token from email selected by login '{login}'"):
+            if attempt == 0:
+                raise AssertionError(f'E-Mail with login {login} can not be found')
+            emails = self.get_api_v2_messages(limit=50).json().get('items')
+            token_key = "ConfirmationLinkUrl" if token_type == 'registration' else "ConfirmationLinkUri"
+            for email in emails:
+                user_data = json.loads(email['Content']['Body'])
+                if login == user_data.get('Login'):
+                    token = user_data.get(token_key).split("/")[-1]
+                    return token
+            time.sleep(2)
         return self.get_token_by_login(login=login, token_type=token_type, attempt=attempt - 1)
 
     def delete_all_messages(self):
-        response = self.client.delete(path='/api/v1/messages')
+        with allure.step(f"Delete all messages from MailHog"):
+            response = self.client.delete(path='/api/v1/messages')
         return response
