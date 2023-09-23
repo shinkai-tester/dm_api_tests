@@ -1,5 +1,5 @@
-from dm_api_account.models import LoginCredentials
-from restclient.restclient import step
+from apis.dm_api_account.models import *
+from common_libs.restclient.restclient import step
 
 
 class Login:

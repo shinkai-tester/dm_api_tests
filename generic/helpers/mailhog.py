@@ -1,9 +1,9 @@
 import json
 import time
-
 import allure
 from requests import Response
-from restclient.restclient import Restclient
+
+from common_libs.restclient.restclient import Restclient
 
 
 class MailhogApi:

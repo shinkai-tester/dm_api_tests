@@ -2,8 +2,8 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any, List, Optional
 from pydantic import BaseModel, Field, StrictStr, ConfigDict
-from dm_api_account.models.rating import Rating
-from dm_api_account.models.roles import UserRole
+from apis.dm_api_account.models.rating import Rating
+from apis.dm_api_account.models.roles import UserRole
 
 
 class User(BaseModel):

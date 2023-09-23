@@ -8,7 +8,7 @@ from vyper import v
 import os
 
 from generic.assertions.assertions import Assertions
-from generic.helpers.data_generator import DataGeneratorHelper
+from data.data_generator import DataGeneratorHelper
 from generic.helpers.dm_db import DmDatabase
 from generic.helpers.mailhog import MailhogApi
 from generic.helpers.orm_db import OrmDatabase
@@ -152,9 +152,12 @@ def pytest_addoption(parser):
 
 @pytest.fixture(autouse=True)
 def set_allure_environment(request, set_config):
-    environment = request.config.getoption('--env')
-    allure_dir = request.config.getoption('--alluredir')
+    allure_dir = request.config.getoption("--alluredir", default=None)
 
+    if allure_dir is None:
+        return
+
+    environment = request.config.getoption('--env')
     dm_api_account = v.get('service.dm_api_account')
     mailhog = v.get('service.mailhog')
     db_host = v.get('database.dm3_5.host')

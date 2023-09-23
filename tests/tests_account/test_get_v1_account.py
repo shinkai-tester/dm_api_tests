@@ -2,7 +2,7 @@ from datetime import datetime
 from hamcrest import has_properties, assert_that, only_contains, all_of, has_length, greater_than_or_equal_to, \
     has_string, starts_with
 
-from dm_api_account.models.roles import UserRole
+from apis.dm_api_account.models.roles import UserRole
 
 
 def test_get_v1_account(dm_api_facade, prepare_user, assertions):
