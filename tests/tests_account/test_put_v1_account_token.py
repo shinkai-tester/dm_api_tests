@@ -1,6 +1,5 @@
 from hamcrest import assert_that, has_properties, greater_than_or_equal_to
-
-from apis.dm_api_account.models.roles import UserRole
+from dm_api_account.models.roles import UserRole
 
 
 def test_put_v1_account_token(dm_api_facade, data_helper, prepare_user, assertions):

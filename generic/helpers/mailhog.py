@@ -3,7 +3,7 @@ import time
 import allure
 from requests import Response
 
-from common_libs.restclient.restclient import Restclient
+from restclient.restclient import Restclient
 
 
 class MailhogApi:

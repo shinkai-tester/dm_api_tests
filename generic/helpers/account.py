@@ -1,5 +1,5 @@
-from apis.dm_api_account.models import Registration, ChangePassword, ResetPassword, ChangeEmail
-from common_libs.restclient.restclient import step
+from dm_api_account.models import Registration, ChangePassword, ResetPassword, ChangeEmail
+from restclient.restclient import step
 
 try:
     from services.dm_api_account import Facade
@@ -8,8 +8,8 @@ except ImportError:
 
 
 class Account:
-    def __init__(self, facade: Facade):
-        self.facade: Facade = facade
+    def __init__(self, facade):
+        self.facade = facade
 
     def set_headers(self, headers):
         """

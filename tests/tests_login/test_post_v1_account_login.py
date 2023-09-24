@@ -1,6 +1,6 @@
 from datetime import datetime
 from hamcrest import assert_that, has_entries, has_string, starts_with
-from apis.dm_api_account.models.roles import UserRole
+from dm_api_account.models.roles import UserRole
 
 
 def test_post_v1_account_login(dm_api_facade, data_helper, prepare_user, assertions):
