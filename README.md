@@ -7,6 +7,7 @@
 - [🔗 Swagger Documentation](#swagger-documentation)
 - [🚀 Installation & Setup](#installation--setup)
 - [🧰 Technologies and Libraries](#technologies-and-libraries)
+- [📂 Project Structure](#project-structure)
 - [🏛️ Architectural Highlights](#architectural-highlights)
 - [🛠️ Configuration](#configuration)
 - [📊 Generating Allure Reports](#generating-allure-reports)
@@ -29,6 +30,29 @@ pip install -r requirements.txt
 - **Requests**: Handles HTTP requests.
 - **JSON**: Manages data in JSON format.
 - **MailHog API**: Retrieves email data for tests.
+
+## 📂 Project Structure
+
+Explore the well-organized and intuitive structure of the project:
+
+- **`apis/`**: This directory houses all APIs that interact within this framework.
+
+- **`common_libs/`**: Here, you'll find universal libraries, including logging clients, designed for reuse across various modules.
+
+- **`config/`**: This is the home for environment configuration files that tailor the test execution environment.
+
+- **`data/`**: Within this directory, you'll discover data generation utilities, including Faker, ensuring dynamic data for your tests.
+
+- **`services/`**: These are the entry points or facades for various APIs, especially useful for seamless integration when dealing with multiple APIs.
+
+- **`tests/`**: A vast collection of tests, meticulously categorized by individual controllers.
+
+- **`generic/`**: This directory contains common helper classes and verifications.
+
+  - **`assertions/`**: A dedicated space for validations, encompassing checks from generic to test-specific.
+
+  - **`helpers/`**: This package is enriched with helper classes, ensuring smooth test executions and auxiliary operations.
+
 
 ## 🏛️ Architectural Highlights
 - **Modular Design**: Encapsulates different components within specific directories and classes.
