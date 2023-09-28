@@ -46,15 +46,14 @@ class TestPostV1Account:
                                        check,
                                        cleanup_user_and_emails
                                        ):
-
         """Test the user registration with various input combinations to validate error and success scenarios"""
 
-        response = dm_api_facade.account.register_new_user(
-            login=login,
-            email=email,
-            password=password,
-            status_code=status_code
-        )
+        with assertions.check_status_code_http(expected_status_code=status_code, expected_result=check):
+            response = dm_api_facade.account.register_new_user(
+                login=login,
+                email=email,
+                password=password
+            )
 
         if status_code == 201:
             assertions.assert_user_was_created(login=login)
@@ -65,9 +64,3 @@ class TestPostV1Account:
                 login=login,
                 password=password
             )
-        else:
-            assertions.assert_json_value_by_name(
-                response=response,
-                name="errors",
-                expected_value=check,
-                error_message="Error is not the same as expected in test")

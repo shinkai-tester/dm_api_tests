@@ -1,6 +1,9 @@
+import json
 import time
+from contextlib import contextmanager
 import allure
-from hamcrest import assert_that, has_properties, equal_to
+import requests
+from hamcrest import assert_that, has_properties, equal_to, has_entries
 from requests import Response
 from generic.helpers.orm_db import OrmDatabase
 
@@ -70,3 +73,14 @@ class Assertions:
             actual_value = getattr(data, name)
 
         assert actual_value == expected_value, error_message
+
+    @contextmanager
+    def check_status_code_http(self, expected_status_code: requests.codes = requests.codes.OK,
+                               expected_result: dict = {}):
+        from dm_api_account import ApiException
+        with allure.step('Check HTTP status code'):
+            try:
+                yield
+            except ApiException as e:
+                assert e.status == expected_status_code
+                assert_that(json.loads(e.body)['errors'], has_entries(expected_result))

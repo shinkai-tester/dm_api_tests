@@ -15,18 +15,19 @@ def test_put_v1_account_password(dm_api_facade, data_helper, prepare_user, asser
         login=login,
         password=password
     )
-    dm_api_facade.account.set_headers(headers=auth_token)
 
     dm_api_facade.account.reset_user_password(
         login=login,
-        email=email
+        email=email,
+        x_dm_auth_token=auth_token
     )
 
     new_password = data_helper.generate_password()
     response_change_password = dm_api_facade.account.change_user_password(
         login=login,
         old_password=password,
-        new_password=new_password
+        new_password=new_password,
+        x_dm_auth_token=auth_token
     )
     assertions.assert_json_value_by_name(
         response=response_change_password,

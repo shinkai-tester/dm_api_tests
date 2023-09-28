@@ -20,11 +20,12 @@ class Login:
         after_message='User login process completed for {login}.'
     )
     def login_user(self, login: str, password: str, remember_me: bool = True):
-        response = self.facade.login_api.post_v1_account_login(
-            json=LoginCredentials(
+        response = self.facade.login_api.v1_account_login_post(
+            _return_http_data_only=False,
+            login_credentials=LoginCredentials(
                 login=login,
                 password=password,
-                rememberMe=remember_me
+                remember_me=remember_me
             )
         )
         return response
@@ -35,21 +36,27 @@ class Login:
             password=password,
             remember_me=remember_me
         )
-        token = {"X-Dm-Auth-Token": response.headers['X-Dm-Auth-Token']}
+        token = response[2]['X-Dm-Auth-Token']
         return token
 
     @step(
         before_message="Initiating user logout process...",
         after_message="User logout process completed."
     )
-    def logout_user(self, **kwargs):
-        response = self.facade.login_api.delete_v1_account_login(**kwargs)
+    def logout_user(self, x_dm_auth_token: str, **kwargs):
+        response = self.facade.login_api.v1_account_login_delete(
+            x_dm_auth_token=x_dm_auth_token,
+            **kwargs
+        )
         return response
 
     @step(
         before_message="Initiating logout from all devices...",
         after_message="Logout from all devices completed."
     )
-    def logout_user_from_all_devices(self, **kwargs):
-        response = self.facade.login_api.delete_v1_account_login_all(**kwargs)
+    def logout_user_from_all_devices(self, x_dm_auth_token: str, **kwargs):
+        response = self.facade.login_api.v1_account_login_all_delete(
+            x_dm_auth_token=x_dm_auth_token,
+            **kwargs
+        )
         return response

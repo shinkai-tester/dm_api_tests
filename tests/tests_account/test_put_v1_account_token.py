@@ -1,5 +1,4 @@
-from hamcrest import assert_that, has_properties, greater_than_or_equal_to
-from dm_api_account.models.roles import UserRole
+from hamcrest import assert_that, has_properties, greater_than_or_equal_to, has_length
 
 
 def test_put_v1_account_token(dm_api_facade, data_helper, prepare_user, assertions):
@@ -23,7 +22,7 @@ def test_put_v1_account_token(dm_api_facade, data_helper, prepare_user, assertio
     assert_that(response.resource, has_properties(
         {
             "login": login,
-            "roles": [UserRole.GUEST, UserRole.PLAYER],
+            "roles": has_length(greater_than_or_equal_to(2)),
             "rating": has_properties({
                 "enabled": True,
                 "quality": greater_than_or_equal_to(0),

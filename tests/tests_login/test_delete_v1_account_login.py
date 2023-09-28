@@ -16,6 +16,7 @@ def test_delete_v1_account_login(dm_api_facade, prepare_user):
         login=login,
         password=password
     )
-    dm_api_facade.login.set_headers(headers=token)
 
-    dm_api_facade.login.logout_user()
+    dm_api_facade.login.logout_user(
+        x_dm_auth_token=token
+    )
