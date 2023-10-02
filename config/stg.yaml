@@ -1,6 +1,7 @@
 service:
   dm_api_account: http://5.63.153.31:5051
   mailhog: http://5.63.153.31:5025
+  dm_api_account_grpc: 5.63.153.31:5055
 
 database:
   dm3_5:

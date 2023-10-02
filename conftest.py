@@ -1,14 +1,18 @@
+import os
 from collections import namedtuple
 from pathlib import Path
+from grpclib.client import Channel
 
 import allure
 import pytest
 import structlog
 from vyper import v
-import os
 
-from generic.assertions.assertions import Assertions
+from apis.dm_api_account_grpc_async import AccountServiceStub
 from data.data_generator import DataGeneratorHelper
+from generic.assertions.assertions import Assertions
+from generic.helpers.account_grpc import AccountGrpc
+from generic.helpers.account_grpc_async import AccountGrpcAsync
 from generic.helpers.dm_db import DmDatabase
 from generic.helpers.mailhog import MailhogApi
 from generic.helpers.orm_db import OrmDatabase
@@ -35,6 +39,25 @@ def dm_api_facade(mailhog):
         host=v.get('service.dm_api_account'),
         mailhog=mailhog
     )
+
+
+@pytest.fixture
+def grpc_account():
+    client = AccountGrpc(
+        target=v.get('service.dm_api_account_grpc')
+    )
+    yield client
+    client.close()
+
+
+@pytest.fixture
+def grpc_account_async():
+    host_port_str = v.get('service.dm_api_account_grpc')
+    host, port_str = host_port_str.split(":")
+    port = int(port_str)
+    client = AccountGrpcAsync(host=host, port=port)
+    yield client
+    client.close()
 
 
 @pytest.fixture
