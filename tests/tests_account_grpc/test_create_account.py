@@ -1,6 +1,5 @@
 import pytest
 from hamcrest import assert_that, has_properties
-
 from apis.dm_api_account_grpc.account_pb2 import UserRole
 
 

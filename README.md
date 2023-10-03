@@ -11,6 +11,8 @@
 - [🏛️ Architectural Highlights](#architectural-highlights)
 - [🛠️ Configuration](#configuration)
 - [📊 Generating Allure Reports](#generating-allure-reports)
+- [🔗 gRPC Testing](#grpc-testing)
+
 
 ## 🔗 Swagger Documentation
 For a detailed breakdown of the API endpoints, refer to the [Swagger documentation](http://5.63.153.31:5051/index.html?urls.primaryName=Account).
@@ -73,3 +75,53 @@ pytest tests/tests_account/test_post_v1_account.py --alluredir=./allure-results
 allure generate -c ./allure-results -o ./allure-report 
 allure serve
 ```
+
+## 🔗 gRPC Testing
+
+### 📑 Overview
+The gRPC client code is auto-generated from the `account.proto` file, which is located in the `apis/dm_api_account_grpc` directory.
+
+### 🛠️ Generating gRPC Code
+
+#### 🔄 Synchronous gRPC Client
+For generating the synchronous gRPC client code, we use `grpcio-tools` and `mypy-protobuf` for adding type annotations. The following commands were executed:
+
+```bash
+pip install grpcio-tools
+pip install mypy-protobuf
+python -m grpc.tools.protoc -I. --mypy_out=readable_stubs,quiet:. --mypy_grpc_out=readable_stubs,quiet:. --python_out=. --grpc_python_out=. apis/dm_api_account_grpc/account.proto
+```
+#### 🌀 Asynchronous gRPC Client
+For generating the asynchronous gRPC client code, we use betterproto. The following commands were executed:
+
+```bash
+pip install "betterproto[compiler]"
+pip install betterproto==v2.0.0-beta5
+python -m grpc_tools.protoc -I. --python_betterproto_out=. apis/dm_api_account_grpc/account.proto
+```
+
+### 🏛️ Architectural Highlights
+
+### 📁 Directories and Wrappers
+
+- **🔄 Synchronous Client**: 
+  - **Generated Code & Client**: Reside in `apis/dm_api_account_grpc`.
+  - **Wrapper**: Can be found at `generic/helpers/account_grpc.py`.
+  
+- **🌀 Asynchronous Client**:
+  - **Generated Code & Client**: Housed in `apis/dm_api_account_grpc_async`.
+  - **Wrapper**: Located in `generic/helpers/account_grpc_async.py`.
+
+#### ✔️ Test Scenarios
+
+We have two types of tests to validate account registration and login:
+
+- **🔄 Synchronous Test**: 
+  - Leverages the synchronous gRPC client.
+  - Includes test case for user registration and login.
+
+- **🌀 Asynchronous Test**: 
+  - Conducted asynchronously.
+  - Offers the same validation metrics as its synchronous kin.
+
+For more details, check the test file in the `tests/tests_account_grpc` directory.
